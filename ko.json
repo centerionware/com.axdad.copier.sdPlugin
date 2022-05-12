@@ -1,0 +1,12 @@
+{
+  "Description": "텍스트를 클립보드에 복사",
+  "Name": "복사기",
+  "Category": "Templates",
+  "com.axdad.copier.action": {
+    "Name": "클립 보드에 복사",
+    "Tooltip": "텍스트를 클립보드에 복사"
+  },
+  "Localization": {
+    "Message": "메세지"
+  }
+}

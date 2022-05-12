@@ -1,0 +1,12 @@
+{
+  "Description": "Kopiert Text in die Zwischenablage", 
+  "Name": "Kopierer", 
+  "Category": "Templates", 
+  "com.axdad.copier.action": {
+    "Name": "In die Zwischenablage kopieren", 
+    "Tooltip": "Kopiert Text in die Zwischenablage"
+  },
+  "Localization": {
+    "Message": "Nachricht"
+  }
+}
