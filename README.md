@@ -1,4 +1,11 @@
 https://github.com/centerionware/com.axdad.copier.sdPlugin
+-----
+Probably should have named it clipboard.. as it puts the thing into the clipboard. hindsight.
+To change maxlength from 5000 edit propertyinspector/index.html and change maxlength="5000"
+
+----
+
+
 
 Change it however ya'll want, do whatever ya'll want, it's useful for me. It would be more useful if it could autopaste after putting into the clipboard so I didn't need to use a multi action to paste right after, but that's just QoL I dun wanna do and hope someone else will in the future.
 
