@@ -19,7 +19,7 @@ Description: Copies text from Message box to clipboard so it can be pasted (like
 
 Release Notes: First probably last version. just a few short lines of JS modified example template.
 
-Support-Link: Please don't
+Support-Link: https://github.com/centerionware/com.axdad.copier.sdPlugin/issues
 
 Operating System: both
 
