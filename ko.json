@@ -1,7 +1,7 @@
 {
   "Description": "텍스트를 클립보드에 복사",
   "Name": "복사기",
-  "Category": "Templates",
+  "Category": "System",
   "com.axdad.copier.action": {
     "Name": "클립 보드에 복사",
     "Tooltip": "텍스트를 클립보드에 복사"

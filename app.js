@@ -1,17 +1,5 @@
 /* global $CC, Utils, $SD */
 
-/**
- * Here are a couple of wrappers we created to help you quickly setup
- * your plugin and subscribe to events sent by Stream Deck to your plugin.
- */
-
-/**
- * The 'connected' event is sent to your plugin, after the plugin's instance
- * is registered with Stream Deck software. It carries the current websocket
- * and other information about the current environmet in a JSON object
- * You can use it to subscribe to events you want to use in your plugin.
- */
-
 
 $SD.on('connected', (jsonObj) => connected(jsonObj));
 
@@ -35,82 +23,44 @@ const action = {
     settings:{},
     onDidReceiveSettings: function(jsn) {
         console.log('%c%s', 'color: white; background: red; font-size: 15px;', '[app.js]onDidReceiveSettings:');
-
         this.settings = Utils.getProp(jsn, 'payload.settings', {});
-        this.doSomeThing(this.settings, 'onDidReceiveSettings', 'orange');
-
-        /**
-         * In this example we put a HTML-input element with id='mynameinput'
-         * into the Property Inspector's DOM. If you enter some data into that
-         * input-field it get's saved to Stream Deck persistently and the plugin
-         * will receive the updated 'didReceiveSettings' event.
-         * Here we look for this setting and use it to change the title of
-         * the key.
-         */
-
-         this.setTitle(jsn);
     },
-
-    /** 
-     * The 'willAppear' event is the first event a key will receive, right before it gets
-     * shown on your Stream Deck and/or in Stream Deck software.
-     * This event is a good place to setup your plugin and look at current settings (if any),
-     * which are embedded in the events payload.
-     */
-
     onWillAppear: function (jsn) {
         console.log("You can cache your settings in 'onWillAppear'", jsn.payload.settings);
-        /**
-         * The willAppear event carries your saved settings (if any). You can use these settings
-         * to setup your plugin or save the settings for later use. 
-         * If you want to request settings at a later time, you can do so using the
-         * 'getSettings' event, which will tell Stream Deck to send your data 
-         * (in the 'didReceiveSettings above)
-         * 
-         * $SD.api.getSettings(jsn.context);
-        */
         this.settings = jsn.payload.settings;
-
-        // Nothing in the settings pre-fill, just something for demonstration purposes
-        if (!this.settings || Object.keys(this.settings).length === 0) {
-            this.settings.mynameinput = 'TEMPLATE';
-        }
-        this.setTitle(jsn);
+        if(this.settings["mymessage"] == "") 
+            this.settings["mymessage"] = "Enter your text to be copied here." // Breaks localization.. idk how to get the localization strings.
     },
-
     onKeyUp: function (jsn) {
         function l_copy(copyText_in) {
             function htmlEntities(str) {
                 return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             }
-            copyText_in_html = htmlEntities(copyText_in)
-            //copyText_in_html = copyText_in_html.replace("\n", "<br/>")
-            //var copyText = document.getElementById("copy-my-contents");
+            copyText_in_html = htmlEntities(copyText_in) 
+            // First just make sure there are no old "copy_text" in memory for whatever reason (precautionary)
             var all_copies = document.querySelectorAll('#copy_text')
             all_copies.forEach(element => {
                 element.remove()
             });
-            var copyText = document.createElement("pre");
+            // Now get going. Dump the text out to an html element on the dom, select it, run the copy command through the document.execCommand
+            var copyText = document.createElement("pre"); // Create a pre node so newlines, tabs, spaces are preserved.
             copyText.id = "copy_text"
-            copyText.innerHTML = copyText_in_html
-            //copyText.append(document.createTextNode(copyText_in))
-            //copyText.textContent = copyText_in.replace("\n","<br/>");
+            copyText.innerHTML = copyText_in_html // Set the innerHTML to the htmlEntified text.
             document.body.append(copyText);
             var range = document.createRange();
             var selection = window.getSelection();
-            range.selectNodeContents(copyText);  
+            range.selectNodeContents(copyText);  // Set the range for the selection ? Not sure how this works, it was copied from probably stack overflow but who knows
             selection.removeAllRanges();
-            selection.addRange(range);
-            document.execCommand("copy");
+            selection.addRange(range); // Select the text ?
+            document.execCommand("copy"); // This is depricated but should still work since I think the steam deck stuff is QT which uses a _really_ old browser engine (even in QT6)
             console.log('Tried to copy with document.execCommand("copy")')
-            navigator.clipboard.writeText(copyText_in)
+            navigator.clipboard.writeText(copyText_in) // I don't think this is working because it's not SSL? But it might be and is the "preferred" way
             console.log("Tried to set the navigator clipboard .. ")
         }
 
         l_copy(this.settings["mymessage"])
-        //navigator.clipboard.writeText(this.settings["message"])
-        //child_process.spawn('clip').stdin.end(this.settings["message"]);
-        this.doSomeThing(jsn, 'onKeyUp', 'green');
+        //navigator.clipboard.writeText(this.settings["message"]) // This is the preferred way, however, only works when connected to an SSL site? 
+        //child_process.spawn('clip').stdin.end(this.settings["message"]); // This would probably work if using node.js
     },
 
     onSendToPlugin: function (jsn) {
@@ -122,56 +72,9 @@ const action = {
 
         const sdpi_collection = Utils.getProp(jsn, 'payload.sdpi_collection', {});
         if (sdpi_collection.value && sdpi_collection.value !== undefined) {
-            this.doSomeThing({ [sdpi_collection.key] : sdpi_collection.value }, 'onSendToPlugin', 'fuchsia');            
+            console.log({ [sdpi_collection.key] : sdpi_collection.value }, 'onSendToPlugin', 'fuchsia');            
         }
     },
-
-    /**
-     * This snippet shows how you could save settings persistantly to Stream Deck software.
-     * It is not used in this example plugin.
-     */
-
-    saveSettings: function (jsn, sdpi_collection) {
-        console.log('saveSettings:', jsn);
-        if (sdpi_collection.hasOwnProperty('key') && sdpi_collection.key != '') {
-            if (sdpi_collection.value && sdpi_collection.value !== undefined) {
-                this.settings[sdpi_collection.key] = sdpi_collection.value;
-                console.log('setSettings....', this.settings);
-                $SD.api.setSettings(jsn.context, this.settings);
-            }
-        }
-    },
-
-    /**
-     * Here's a quick demo-wrapper to show how you could change a key's title based on what you
-     * stored in settings.
-     * If you enter something into Property Inspector's name field (in this demo),
-     * it will get the title of your key.
-     * 
-     * @param {JSON} jsn // The JSON object passed from Stream Deck to the plugin, which contains the plugin's context
-     * 
-     */
-
-    setTitle: function(jsn) {
-        if (this.settings && this.settings.hasOwnProperty('mynameinput')) {
-            console.log("watch the key on your StreamDeck - it got a new title...", this.settings.mynameinput);
-            $SD.api.setTitle(jsn.context, this.settings.mynameinput);
-        } else {
-            $SD.api.setTitle(jsn.context, "testing");
-        }
-    },
-
-    /**
-     * Finally here's a method which gets called from various events above.
-     * This is just an idea on how you can act on receiving some interesting message
-     * from Stream Deck.
-     */
-
-    doSomeThing: function(inJsonData, caller, tagColor) {
-        console.log('%c%s', `color: white; background: ${tagColor || 'grey'}; font-size: 15px;`, `[app.js]doSomeThing from: ${caller}`);
-        // console.log(inJsonData);
-    }, 
-
 
 };
 

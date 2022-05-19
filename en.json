@@ -1,7 +1,7 @@
 {
   "Description": "Copies text to the clipboard", 
   "Name": "Copier", 
-  "Category": "Templates", 
+  "Category": "System", 
   "com.axdad.copier.action": {
     "Name": "Copy to Clipboard", 
     "Tooltip": "Copies text to the clipboard"

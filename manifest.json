@@ -8,7 +8,7 @@
           "Image": "action/images/action"
         }
       ], 
-      "Tooltip": "This is an example tooltip", 
+      "Tooltip": "Copies text to the clipboard", 
       "UUID": "com.axdad.copier.action"
     }
   ], 
@@ -19,7 +19,8 @@
   "Description": "Use this with a macro in a multi action. set this first, it will put the string in the clipboard. use a macro after to send control+v or whatever to paste.", 
   "Name": "Copier", 
   "Icon": "action/images/action", 
-  "URL": "https://www.elgato.com/en/gaming/stream-deck", 
+  "Category": "OS",
+  "URL": "https://github.com/centerionware/com.axdad.copier.sdPlugin", 
   "Version": "1.0.1",
   "OS": [
     {
